@@ -1,0 +1,29 @@
+services:
+  app_classic:
+    build:
+      context: ./app_classic
+      dockerfile: Dockerfile
+    container_name: app_classic
+    restart: always
+    networks:
+      - analog_network
+    volumes:
+      - shared_logs:/shared_logs
+
+  fluentbit_classic:
+    build:
+      context: ./fluent-bit
+      dockerfile: Dockerfile
+    container_name: fluentbit_classic
+    restart: always
+    networks:
+      - analog_network
+    volumes:
+      - shared_logs:/shared_logs
+
+networks:
+  analog_network:
+    external: true
+
+volumes:
+  shared_logs:

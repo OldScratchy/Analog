@@ -1,0 +1,13 @@
+services:
+  app_structured:
+    build:
+      context: ./app_structured
+      dockerfile: Dockerfile
+    container_name: app_structured
+    restart: always
+    networks:
+      - analog_network
+
+networks:
+  analog_network:
+    external: true

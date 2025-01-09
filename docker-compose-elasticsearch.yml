@@ -1,0 +1,61 @@
+services:
+  elasticsearch_master:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: elasticsearch_master
+    environment:
+      - node.roles=master
+      - node.name=elasticsearch_master
+      - cluster.initial_master_nodes=elasticsearch_master 
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - logger.org.elasticsearch=INFO
+    networks:
+      - analog_network
+    ports:
+      - "9200:9200"
+
+  elasticsearch_data_0:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: elasticsearch_data_0
+    environment:
+      - node.roles=data
+      - node.name=elasticsearch_data_0
+      - discovery.seed_hosts=elasticsearch_master
+      - cluster.name=docker-cluster
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    networks:
+      - analog_network
+    depends_on:
+      - elasticsearch_master
+
+  elasticsearch_data_1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: elasticsearch_data_1
+    environment:
+      - node.roles=data
+      - node.name=elasticsearch_data_1
+      - discovery.seed_hosts=elasticsearch_master
+      - cluster.name=docker-cluster
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    networks:
+      - analog_network
+    depends_on:
+      - elasticsearch_master
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.3
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch_master:9200
+    networks:
+      - analog_network
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch_master
+
+networks:
+  analog_network:
+    external: true

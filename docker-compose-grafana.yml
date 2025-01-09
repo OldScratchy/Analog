@@ -1,0 +1,18 @@
+services:
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: grafana
+    networks:
+      - analog_network
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=TraeteTuUsuario
+      - GF_SECURITY_ADMIN_PASSWORD=yContraseña!
+    volumes:
+      - ./grafana-data:/var/lib/grafana
+      - ./grafana-provisioning:/etc/grafana/provisioning
+
+networks:
+  analog_network:
+    external: true
